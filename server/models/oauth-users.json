@@ -10,6 +10,9 @@
       "type": "string",
       "required": true
     },
+    "uid": {
+      "type": "String"
+    },
     "scope": {
       "type": "string",
       "required": true
