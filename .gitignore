@@ -10,6 +10,8 @@
 *.swp
 *.tgz
 *.xml
+*.pem
+*.csr
 .DS_Store
 .idea
 .project
