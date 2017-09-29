@@ -1,0 +1,41 @@
+{
+  "name": "OauthUsers",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "access_token": {
+      "type": "string",
+      "required": true
+    },
+    "scope": {
+      "type": "string",
+      "required": true
+    },
+    "signature": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "required": true
+    },
+    "token_type": {
+      "type": "string",
+      "required": true
+    },
+    "issued_at": {
+      "type": "string",
+      "required": true
+    },
+    "id_token": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

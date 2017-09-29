@@ -1,0 +1,11 @@
+version: "2.1"
+services:
+  sf:
+    image: node:6.11.0
+    working_dir: /app
+    env_file: .env
+    volumes:
+      - .:/app
+    command: node server/server.js
+    ports:
+      - 3000:3000
