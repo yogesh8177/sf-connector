@@ -10,6 +10,9 @@
       "type": "string",
       "required": true
     },
+    "refresh_token": {
+      "type":"string"
+    },
     "uid": {
       "type": "String"
     },
