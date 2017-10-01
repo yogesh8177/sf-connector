@@ -1,21 +1,31 @@
 const request = require('request');
 const logger = require('sp-json-logger');
+const util = require('./commonUtils');
 
-module.exports = function createJob(jobConfig, clientConfig) {
+module.exports = function createJob(jobConfig, client) {
   return new Promise((resolve, reject) => {
-    request.post(process.env.SF_CREATE_JOB_URL, {form: {operation: args.operation, object: args.object, contentType: args.contentType}}, (err, res) => {
-      if (err) {
-        logger.tag('JOB CREATE').error({err: err});
-        return reject({source: 'createJob()', error: err});
-      }
-      resolve(res);
-    });
+    request.post({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job`,
+      headers: util.generateHeaders(client),
+      body: jobConfig,
+    },
+        (err, res) => {
+          if (err) {
+            logger.tag('JOB CREATE').error({err: err});
+            return reject({source: 'createJob()', error: err});
+          }
+          resolve(res);
+        });
   });
 };
 
-module.exports = function getJobDetails(jobId, clientConfig) {
+module.exports = function getJobDetails(jobId, client) {
   return new Promise((resolve, reject) => {
-    request.get(process.env.SF_JOB_DETAILS_URL, (err, res) => {
+    request.get({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job/${jobId}`,
+      headers: util.generateHeaders(client),
+    },
+    (err, res) => {
       if (err) {
         logger.tag('JOB DETAILS').error({err: err});
         return reject({source: 'getJobDetails()', error: err});
@@ -25,26 +35,90 @@ module.exports = function getJobDetails(jobId, clientConfig) {
   });
 };
 
-module.exports = function closeJob(jobId, clientConfig) {
+module.exports = function closeJob(jobId, client) {
   return new Promise((resolve, reject) => {
-    request.post(process.env.SF_CLOSE_JOB_URL, {form: {state: 'Closed'}}, (err, res) => {
+    request.post({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job/${jobId}`,
+      headers: util.generateHeaders(client),
+      body: {state: 'Closed'},
+    },
+    (err, res) => {
       if (err) {
         logger.tag('JOB CLOSE').error({err: err});
         return reject({source: 'closeJob()', error: err});
       }
-      resolve(null, res);
+      resolve(res);
     });
   });
 };
 
-module.exports = function abortJob(jobId, clientConfig) {
+module.exports = function abortJob(jobId, client) {
   return new Promise((resolve, reject) => {
-    request.post(process.env.SF_ABORT_JOB_URL, {form: {state: 'Aborted'}}, (err, res) => {
+    request.post({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job/${jobId}`,
+      headers: util.generateHeaders(client),
+      body: {state: 'Aborted'},
+    },
+    (err, res) => {
       if (err) {
         logger.tag('JOB ABORT').error({err: err});
         return reject({source: 'abortJob()', error: err});
       }
       resolve(res);
     });
+  });
+};
+
+/**
+ * ###########################  BATCHES  ##############################
+ */
+
+module.exports.createBatch = (jobId, client) => {
+  return new Promise((resolve, reject) => {
+    request.post({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job/${jobId}/batch`,
+      headers: util.generateHeaders(client),
+      body: 'Your plain text query here...',
+    },
+    (err, res) => {
+      if (err) {
+        logger.tag('CREATE BATCH').debug({err: err});
+        return reject({source: 'createBatch()', error: err});
+      }
+    });
+  });
+};
+
+module.exports.getBatchInfo = (jobId, batchId, client) => {
+  return new Promise((resolve, reject) => {
+    request.get({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job/${jobId}/batch/${batchId}`,
+      headers: util.generateHeaders(client),
+      body: 'Your plain text query here...',
+    },
+        (err, res) => {
+          if (err) {
+            logger.tag('CREATE BATCH').debug({err: err});
+            return reject({source: 'createBatch()', error: err});
+          }
+          resolve(res);
+        });
+  });
+};
+
+module.exports.getBatchResult = (jobId, batchId, client) => {
+  return new Promise((resolve, reject) => {
+    request.get({
+      url: `${client.instance_url}/services/async/${process.env.API_VERSION}/job/${jobId}/batch/${batchId}/result`,
+      headers: util.generateHeaders(client),
+      body: 'Your plain text query here...',
+    },
+      (err, res) => {
+        if (err) {
+          logger.tag('CREATE BATCH').debug({err: err});
+          return reject({source: 'createBatch()', error: err});
+        }
+        resolve(res);
+      });
   });
 };

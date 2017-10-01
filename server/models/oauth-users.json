@@ -13,7 +13,7 @@
     "refresh_token": {
       "type":"string"
     },
-    "uid": {
+    "loginId": {
       "type": "String"
     },
     "scope": {
